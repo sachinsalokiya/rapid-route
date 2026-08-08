@@ -4,9 +4,12 @@ const logger = require('../utils/logger');
 let ioInstance = null;
 
 function initSocket(server) {
+  const clientOrigin =
+    process.env.CLIENT_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173';
+
   ioInstance = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      origin: clientOrigin,
       methods: ['GET', 'POST'],
     },
   });

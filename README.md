@@ -174,9 +174,20 @@ cd frontend && npm test && npm run build
 cd ml && pip install -r requirements.txt && python src/train.py && PYTHONPATH=src pytest -q
 ```
 
-## Deployment
+## Deployment (recommended)
 
-This repository ships CI (lint/test/build) but no fake deploy steps. Deploy the four services behind HTTPS with strong `JWT_SECRET`, private MongoDB, and your own OSRM endpoint when ready.
+**Host the whole website as one app:** [Render](https://render.com) Web Service + [MongoDB Atlas](https://www.mongodb.com/atlas).
+
+Express serves the built React app and the API on the same URL (`render.yaml` is included).
+
+Full walkthrough: **[docs/deployment.md](docs/deployment.md)**
+
+Short version:
+1. Create a free Atlas cluster and copy `MONGODB_URI`
+2. On Render → New → Blueprint (or Web Service) → connect this repo
+3. Set `MONGODB_URI` (+ `CLIENT_URL` to your Render URL)
+4. After deploy, run `npm run seed --prefix backend` in the Render Shell
+5. Open `https://YOUR-SERVICE.onrender.com` and login with `admin@rapidroute.in` / `Admin@123`
 
 ## Limitations
 

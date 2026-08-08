@@ -1,0 +1,31 @@
+# Rapid Route — one web service on Render
+# Frontend build is served by Express in production (single public URL).
+
+services:
+  - type: web
+    name: rapid-route
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend
+    startCommand: npm start --prefix backend
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVE_FRONTEND
+        value: "true"
+      - key: OSRM_BASE_URL
+        value: https://router.project-osrm.org
+      - key: TRACKING_SIMULATION_ENABLED
+        value: "true"
+      - key: ML_SERVICE_URL
+        value: ""
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: OPENWEATHER_API_KEY
+        sync: false
