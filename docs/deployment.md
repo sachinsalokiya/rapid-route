@@ -55,7 +55,7 @@ Replace `<password>` with the real password (URL-encode special characters if ne
 | Field | Value |
 |--------|--------|
 | Runtime | Node |
-| Build Command | `npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend` |
+| Build Command | `NPM_CONFIG_PRODUCTION=false npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend --omit=dev` |
 | Start Command | `npm start --prefix backend` |
 | Instance | Free |
 

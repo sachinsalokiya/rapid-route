@@ -7,7 +7,7 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend
+    buildCommand: NPM_CONFIG_PRODUCTION=false npm ci --prefix frontend && npm run build --prefix frontend && npm ci --prefix backend --omit=dev
     startCommand: npm start --prefix backend
     healthCheckPath: /health
     envVars:
