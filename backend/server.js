@@ -1,35 +1,31 @@
-// Load environment variables from .env file
 require('dotenv').config();
 
+const http = require('http');
+const app = require('./src/app');
+const connectDB = require('./src/config/db');
+const { initSocket } = require('./src/socket');
+const { startTrackingSimulator } = require('./src/services/trackingSimulator');
+const logger = require('./src/utils/logger');
 
+const PORT = process.env.PORT || 4000;
 
-// Import express package
-const express = require('express');
+async function start() {
+  await connectDB();
 
-// Import cors package
-const cors = require('cors');
+  const server = http.createServer(app);
+  const io = initSocket(server);
+  app.set('io', io);
 
-const db = require('./db/index');
+  if (process.env.TRACKING_SIMULATION_ENABLED !== 'false') {
+    startTrackingSimulator(io);
+  }
 
-// Create the express app
-const app = express();
+  server.listen(PORT, () => {
+    logger.info(`Rapid Route API listening on http://localhost:${PORT}`);
+  });
+}
 
-// Middleware — these lines teach Express to understand JSON
-// and allow requests from your React frontend
-app.use(cors());
-app.use(express.json());
-
-// Your first API route — a simple test
-// When someone visits http://localhost:5000/api/test
-// they get this response
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Rapid Route backend is working!' });
-});
-
-// Read the port from .env file (5000)
-const PORT = process.env.PORT || 5000;
-
-// Start the server and listen for requests
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+start().catch((err) => {
+  logger.error('Failed to start server', { error: err.message });
+  process.exit(1);
 });

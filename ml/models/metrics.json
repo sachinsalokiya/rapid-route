@@ -1,0 +1,13 @@
+{
+  "dataset": "synthetic_logistics.csv",
+  "dataset_note": "Synthetic demo dataset \u2014 not real operational GPS/logistics telemetry",
+  "rows": 4000,
+  "mode_classification": {
+    "accuracy": 0.9675,
+    "f1_weighted": 0.9635
+  },
+  "eta_regression": {
+    "mae_hours": 0.315,
+    "rmse_hours": 0.407
+  }
+}
