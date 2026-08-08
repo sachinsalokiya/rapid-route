@@ -20,12 +20,14 @@ async function start() {
     startTrackingSimulator(io);
   }
 
-  server.listen(PORT, () => {
-    logger.info(`Rapid Route API listening on http://localhost:${PORT}`);
+  server.listen(PORT, '0.0.0.0', () => {
+    logger.info(`Rapid Route API listening on port ${PORT}`);
   });
 }
 
 start().catch((err) => {
-  logger.error('Failed to start server', { error: err.message });
+  // console.error so Render logs always show the real reason
+  console.error('Failed to start server:', err);
+  logger.error('Failed to start server', { error: err.message, stack: err.stack });
   process.exit(1);
 });
