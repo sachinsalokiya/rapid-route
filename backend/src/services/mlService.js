@@ -1,10 +1,17 @@
 const axios = require('axios');
 const logger = require('../utils/logger');
 
-const getMlUrl = () => (process.env.ML_SERVICE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const getMlUrl = () => {
+  if (!process.env.ML_SERVICE_URL) return '';
+  return process.env.ML_SERVICE_URL.replace(/\/$/, '');
+};
 
 async function predict({ packageType, distance, weight, urgency, transportMode, routeDurationHours }) {
-  const url = `${getMlUrl()}/predict`;
+  const base = getMlUrl();
+  if (!base) {
+    return heuristicPredict({ packageType, distance, weight, urgency, transportMode, routeDurationHours });
+  }
+  const url = `${base}/predict`;
   try {
     const { data } = await axios.post(
       url,

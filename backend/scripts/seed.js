@@ -16,8 +16,10 @@ const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'Admin@123';
 
 async function seed() {
   const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/rapidroute';
-  await mongoose.connect(uri);
-  console.log('Connected to MongoDB for seeding');
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(uri);
+    console.log('Connected to MongoDB for seeding');
+  }
 
   await Promise.all([
     User.deleteMany({}),
@@ -360,7 +362,6 @@ async function seed() {
   console.log('  admin@rapidroute.in (admin)');
   console.log('  dispatcher@rapidroute.in (dispatcher)');
   console.log('  ravi.driver@rapidroute.in (driver)');
-  await mongoose.disconnect();
 }
 
 function haversineKm(a, b) {
@@ -375,7 +376,13 @@ function haversineKm(a, b) {
   return Number((2 * R * Math.asin(Math.sqrt(h))).toFixed(2));
 }
 
-seed().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  seed()
+    .then(() => mongoose.disconnect())
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}
+
+module.exports = seed;

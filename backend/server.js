@@ -6,11 +6,21 @@ const connectDB = require('./src/config/db');
 const { initSocket } = require('./src/socket');
 const { startTrackingSimulator } = require('./src/services/trackingSimulator');
 const logger = require('./src/utils/logger');
+const User = require('./src/models/User');
+const seed = require('./scripts/seed');
 
 const PORT = process.env.PORT || 4000;
 
 async function start() {
   await connectDB();
+
+  if (process.env.SEED_ON_EMPTY !== 'false') {
+    const users = await User.countDocuments();
+    if (users === 0) {
+      logger.info('Database is empty — seeding demo accounts and shipments');
+      await seed();
+    }
+  }
 
   const server = http.createServer(app);
   const io = initSocket(server);
